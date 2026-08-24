@@ -49,6 +49,7 @@ Before posting in Superteam Discord, record:
 - **Venues Live:** 
   1. `Solana Tech Discord (#core-technology)` — Live at 18:34 UTC
   2. `X / Twitter (@Solana / Devs)` — Live at 18:44 UTC
+  3. `Superteam Ecosystem (@SuperteamEarn / Canada)` — Live at 20:29 UTC
 
 ---
 
