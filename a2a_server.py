@@ -470,6 +470,23 @@ def app(environ: dict, start_response: Any):
     path = environ.get("PATH_INFO", "/")
     method = environ.get("REQUEST_METHOD", "GET")
 
+    if method == "GET" and path == "/":
+        welcome = {
+            "service": "Bounty Radar A2A Server",
+            "version": "1.0.0",
+            "status": "online",
+            "endpoints": {
+                "health": "/health",
+                "agent_card": "/a2a",
+                "well_known_card": "/.well-known/agent-card.json",
+                "jsonrpc_endpoint": "POST /a2a",
+            },
+            "docs": "https://github.com/fliptrigga13/bounty-radar",
+        }
+        body = json.dumps(welcome, ensure_ascii=False, indent=2).encode("utf-8")
+        start_response("200 OK", [("Content-Type", "application/json")])
+        return [body]
+
     if method == "GET" and path == "/health":
         start_response("200 OK", [("Content-Type", "application/json")])
         return [b'{"status":"ok"}']
