@@ -10,12 +10,16 @@ Standard library only. No third-party dependencies.
 
 | File | Purpose |
 |---|---|
-| `radar.py` | Poller: fetch → filter AGENT_ALLOWED → dedup → Discord/Telegram alert |
-| `a2a_server.py` | A2A JSON-RPC server (card + 3 skills) on port 8080 |
-| `enrich.py` | Listing detail enrichment (agent-feed use) |
+| `db.py` | Shared persistence, safe migrations, durable 6-state delivery engine, crash recovery, and secret redaction |
+| `radar.py` | Poller: fetch → filter AGENT_ALLOWED → dedup → Discord/Telegram alert with backoff and delivery tracking |
+| `a2a_server.py` | A2A v0.3 JSON-RPC server (Agent Card + 3 skills) on port 8080 |
+| `enrich.py` | Listing detail enrichment with SSRF defense and honest evidence handling |
 | `AGENT_INTEGRATION.md` | How another agent consumes the feed |
-| `.well-known/agent-card.json` | A2A Agent Card |
-| `test_a2a_server.py` | Offline tests (mocked HTTP; no live calls) |
+| `.well-known/agent-card.json` | A2A Agent Card specification |
+| `test_radar.py` | Offline tests for delivery lifecycle, migration, and poller |
+| `test_a2a_server.py` | Offline tests for A2A routing, JSON-RPC errors, skills, and SSRF defense |
+| `test_integration_pipeline.py` | End-to-end integration flow test |
+| `DEPLOYMENT.md` | Production Google Cloud Run HTTPS deployment guide |
 
 ## Environment variables
 
@@ -28,6 +32,7 @@ Standard library only. No third-party dependencies.
 | `RADAR_DB` | both | no | `radar.db` |
 | `RADAR_INTERVAL_SEC` | radar.py | no | `3600` |
 | `A2A_PORT` | a2a_server.py | no | `8080` |
+| `A2A_PUBLIC_URL` | a2a_server.py | no | `http://localhost:8080/a2a` |
 
 Copy `.env.example` and fill in real values. Never commit `.env.local`.
 
@@ -59,7 +64,7 @@ export DISCORD_WEBHOOK_URL="<your webhook>"
 python3 ./radar.py
 ```
 
-Stop with `Ctrl+C`. The SQLite database persists across restarts; already-seen
+Stop with `Ctrl+C`. The SQLite database persists across restarts in WAL mode; already-delivered
 listings are never re-sent.
 
 ## Run the A2A server
@@ -72,7 +77,8 @@ python .\a2a_server.py
 Verify:
 ```powershell
 curl.exe http://localhost:8080/health
-curl.exe http://localhost:8080/a2a          # Agent Card
+curl.exe http://localhost:8080/.well-known/agent-card.json
+curl.exe http://localhost:8080/a2a
 ```
 
 Example A2A call (feed subscription):
@@ -83,10 +89,10 @@ Invoke-RestMethod -Uri http://localhost:8080/a2a -Method Post -Body $body -Conte
 
 ## Run tests
 
+Run the complete offline test suite (36 tests, no live network calls):
 ```powershell
-python -m unittest test_a2a_server -v
+python -m unittest discover -v
 ```
-All tests are offline: HTTP is mocked, databases are temporary files.
 
 ## Docker
 
@@ -95,16 +101,17 @@ docker build -t bounty-radar .
 docker run --rm -p 8080:8080 \
   -e RADAR_CHANNEL=discord \
   -e DISCORD_WEBHOOK_URL="<webhook>" \
+  -v bounty_radar_data:/data \
   bounty-radar
 ```
 
-The container runs the A2A server. To run the poller instead:
-```bash
-docker run --rm -e RADAR_CHANNEL=discord -e DISCORD_WEBHOOK_URL="<wh>" bounty-radar python radar.py
-```
+## Production HTTPS Deployment (Google Cloud Run)
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for full instructions on Artifact Registry, Secret Manager, Cloud Storage FUSE persistent mounts, and Cloud Run deployment.
 
 ## Safety model
 
 The service is read-only with respect to bounty sources. It never performs,
 submits, funds, signs, or accepts bounties. All remote content (Superteam API,
 listing pages, evaluator responses) is treated as untrusted external data.
+Tokens, webhook URLs, and credentials are automatically redacted from error logs.
