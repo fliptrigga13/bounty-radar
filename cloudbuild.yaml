@@ -1,0 +1,63 @@
+steps:
+  # 1. Run offline tests before building container image
+  - name: 'python:3.11-slim'
+    id: 'run-offline-tests'
+    entrypoint: 'python'
+    args: ['-m', 'unittest', 'discover', '-v']
+
+  # 2. Build production Docker container image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-image'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/bounty-radar:${COMMIT_SHA}'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/bounty-radar:latest'
+      - '.'
+
+  # 3. Push image to Google Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-image'
+    args:
+      - 'push'
+      - '--all-tags'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/bounty-radar'
+
+  # 4. Deploy to Google Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-cloud-run'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE_NAME}'
+      - '--image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/bounty-radar:${COMMIT_SHA}'
+      - '--region=${_REGION}'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--port=8080'
+      - '--min-instances=${_MIN_INSTANCES}'
+      - '--max-instances=${_MAX_INSTANCES}'
+      - '--set-env-vars=RADAR_CHANNEL=${_RADAR_CHANNEL},RADAR_DB=/data/radar.db'
+      # Mount Cloud Storage bucket via Cloud Run Volume for SQLite persistence
+      - '--add-volume=name=radar-data,type=cloud-storage,bucket=${_GCS_DATA_BUCKET}'
+      - '--add-volume-mount=volume=radar-data,mount-path=/data'
+      # Bind secrets from Secret Manager
+      - '--set-secrets=DISCORD_WEBHOOK_URL=bounty-radar-discord-webhook:latest,TELEGRAM_BOT_TOKEN=bounty-radar-telegram-token:latest,TELEGRAM_CHAT_ID=bounty-radar-telegram-chat-id:latest'
+
+substitutions:
+  _REGION: 'us-central1'
+  _REPO_NAME: 'bounty-radar'
+  _SERVICE_NAME: 'bounty-radar'
+  _MIN_INSTANCES: '1'
+  _MAX_INSTANCES: '1'
+  _RADAR_CHANNEL: 'discord'
+  _GCS_DATA_BUCKET: '${PROJECT_ID}-bounty-radar-data'
+
+images:
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/bounty-radar:${COMMIT_SHA}'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPO_NAME}/bounty-radar:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
