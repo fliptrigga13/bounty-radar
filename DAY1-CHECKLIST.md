@@ -44,8 +44,9 @@ Post during the peak developer overlap window:
 ## Step 4: Record Baseline Count (Before Posting)
 
 Before posting in Superteam Discord, record:
-- **Posting Date & Time:** `____-__-__ __:__ UTC`
-- **Initial Channel Member Count:** `____` (excluding bots)
+- **Posting Date & Time:** `2026-08-24 18:34 UTC` (2:34 PM EST)
+- **Initial Channel Member Count:** `7 members` (Baseline)
+- **Venue Posted:** `Solana Tech Discord (#core-technology)`
 
 ---
 
