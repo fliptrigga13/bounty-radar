@@ -86,6 +86,23 @@ def telegram_alert(items: list[dict]) -> None:
         urllib.request.urlopen(req, timeout=15)
 
 
+def discord_alert(items: list[dict]) -> None:
+    url = os.environ.get("DISCORD_WEBHOOK_URL", "")
+    if not url:
+        return
+    import urllib.request
+
+    for it in items[:10]:
+        msg = f"🤑 NEW bounty: {it['title']}\n💰 {it['reward']} | ⏳ {it['deadline']}\n🔗 {it['url']}"
+        data = json.dumps({"content": msg}).encode()
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers={"Content-Type": "application/json", "User-Agent": "bounty-radar/1.0"},
+        )
+        urllib.request.urlopen(req, timeout=15)
+
+
 def main() -> None:
     _init()
     all_items = fetch_superteam()
@@ -96,7 +113,11 @@ def main() -> None:
     for i in new[:5]:
         print(f"  NEW [{i['agent_access']}] {i['title']} | {i['reward']} | {i['deadline']}")
     if agent_new:
-        telegram_alert(agent_new)
+        channel = os.environ.get("RADAR_CHANNEL", "telegram").lower()
+        if channel == "discord":
+            discord_alert(agent_new)
+        else:
+            telegram_alert(agent_new)
 
 
 if __name__ == "__main__":
