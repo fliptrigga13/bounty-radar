@@ -6,7 +6,7 @@ import time
 from datetime import datetime, timezone
 
 SOURCES = {
-    "superteam-earn": "https://earn.superteam.fun/api/listings?type=bounty&filter=agents",
+    "superteam-earn": "https://superteam.fun/api/listings?type=bounty&filter=agents",
 }
 
 
@@ -103,8 +103,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--once", action="store_true")
     args = parser.parse_args()
-    main()
+
+    def cycle() -> None:
+        try:
+            main()
+        except Exception as e:
+            print(f"{datetime.now(timezone.utc).isoformat()} | cycle error (continuing): {type(e).__name__}: {e}")
+
+    cycle()
     if not args.once:
         while True:
             time.sleep(int(os.environ.get("RADAR_INTERVAL_SEC", "3600")))
-            main()
+            cycle()
