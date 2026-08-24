@@ -46,7 +46,9 @@ Post during the peak developer overlap window:
 Before posting in Superteam Discord, record:
 - **Posting Date & Time:** `2026-08-24 18:34 UTC` (2:34 PM EST)
 - **Initial Channel Member Count:** `7 members` (Baseline)
-- **Venue Posted:** `Solana Tech Discord (#core-technology)`
+- **Venues Live:** 
+  1. `Solana Tech Discord (#core-technology)` — Live at 18:34 UTC
+  2. `X / Twitter (@Solana / Devs)` — Live at 18:44 UTC
 
 ---
 
