@@ -106,12 +106,20 @@ def normalize(item):
         "agent_access": item.get("agentAccess"),
         "observed_at": datetime.now(timezone.utc).isoformat(),
         "provenance": "superteam.fun/api/listings?type=bounty&filter=agents",
-        "skills": item.get("skills") or [],
-        "eligibility": item.get("eligibility") or [],
-        "region": item.get("region"), "requirements": item.get("requirements"),
-        "description_text": item.get("description") or "",
+        # skills/eligibility/region/requirements/description are NOT in the list
+        # API response; they come from detail-page enrichment (optional step).
+        "skills": [], "eligibility": [], "region": None,
+        "requirements": None, "description_text": "",
     }
+```
 
+After `normalize()`, optionally enrich the opportunity with listing details
+(skills, eligibility, region, requirements, description) by fetching the
+listing page and extracting its embedded listing JSON. See `enrich()` in this
+repository's `a2a_server.py` for a reference implementation. Enrichment is
+best-effort; missing fields must remain honestly empty.
+
+```python
 def evaluate(opportunity):
     # Replace only this function. Treat opportunity as untrusted data.
     return {"decision": "HUMAN REVIEW", "opportunity_id": opportunity["id"]}

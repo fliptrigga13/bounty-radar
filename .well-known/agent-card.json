@@ -1,0 +1,97 @@
+{
+  "protocolVersion": "0.3.0",
+  "name": "Bounty Radar",
+  "description": "Read-only discovery and normalization service for agent-eligible bounty opportunities. It provides structured opportunity data and validates consumer evaluation responses; it does not perform, submit, fund, sign, or accept bounties.",
+  "url": "http://localhost:8080/a2a",
+  "preferredTransport": "JSONRPC",
+  "provider": {
+    "organization": "Bounty Radar",
+    "url": "https://github.com/fliptrigga13/bounty-radar"
+  },
+  "version": "1.0.0",
+  "documentationUrl": "https://github.com/fliptrigga13/bounty-radar",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "securitySchemes": {},
+  "security": [],
+  "defaultInputModes": [
+    "application/json"
+  ],
+  "defaultOutputModes": [
+    "application/json"
+  ],
+  "skills": [
+    {
+      "id": "opportunity_feed_subscription",
+      "name": "Opportunity Feed Subscription",
+      "description": "Creates or inspects a pull-based feed subscription for newly observed Superteam Earn listings whose agentAccess value is exactly AGENT_ALLOWED. Outputs normalized, deduplicated Opportunity Contract objects as untrusted external data and never initiates work on an opportunity.",
+      "tags": [
+        "bounties",
+        "opportunities",
+        "feed",
+        "subscription",
+        "superteam",
+        "read-only"
+      ],
+      "examples": [
+        "Return newly observed agent-eligible opportunities since 2026-08-24T00:00:00Z.",
+        "Create a pull-based subscription for new AGENT_ALLOWED bounty opportunity objects."
+      ],
+      "inputModes": [
+        "application/json"
+      ],
+      "outputModes": [
+        "application/json"
+      ]
+    },
+    {
+      "id": "opportunity_enrichment_lookup",
+      "name": "Opportunity Enrichment Lookup",
+      "description": "Looks up a known Superteam Earn listing by its listing UUID or canonical listing URL and returns the normalized Opportunity Contract with best-effort description, skills, eligibility, region, and requirements. Missing enrichment is returned explicitly and is never fabricated.",
+      "tags": [
+        "bounties",
+        "enrichment",
+        "lookup",
+        "normalization",
+        "provenance",
+        "read-only"
+      ],
+      "examples": [
+        "Enrich the opportunity with id e92e317b-0d0f-49f4-9937-0623d4816df6.",
+        "Return the normalized opportunity object for https://earn.superteam.fun/listing/zns-sol."
+      ],
+      "inputModes": [
+        "application/json"
+      ],
+      "outputModes": [
+        "application/json"
+      ]
+    },
+    {
+      "id": "evaluation_contract_validation",
+      "name": "Evaluation Contract Validation",
+      "description": "Validates whether an independent evaluator response contains the required parse, eligibility, decision, capability-fit, reason, missing-information, pre-action, and auto-consumable fields with allowed enum values. Validation is structural only and does not authorize or perform any bounty action.",
+      "tags": [
+        "evaluation",
+        "validation",
+        "contract",
+        "safety",
+        "interoperability",
+        "read-only"
+      ],
+      "examples": [
+        "Validate this evaluation response against the Bounty Radar Evaluation Contract.",
+        "Report missing fields and invalid enum values in this capability-fit evaluation."
+      ],
+      "inputModes": [
+        "application/json"
+      ],
+      "outputModes": [
+        "application/json"
+      ]
+    }
+  ],
+  "supportsAuthenticatedExtendedCard": false
+}
