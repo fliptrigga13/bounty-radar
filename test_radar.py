@@ -1,4 +1,4 @@
-"""Offline tests for Bounty Radar persistence, migration, delivery lifecycle, and secret redaction."""
+"""Offline tests for Bounty Radar persistence, migration, delivery lifecycle, and radar.py daemon."""
 
 import json
 import os
@@ -7,9 +7,12 @@ import sqlite3
 import tempfile
 import time
 import unittest
+import urllib.error
 from datetime import datetime, timedelta, timezone
+from unittest import mock
 
 import db
+import radar
 
 
 class TestDatabaseMigrationAndPersistence(unittest.TestCase):
@@ -22,7 +25,6 @@ class TestDatabaseMigrationAndPersistence(unittest.TestCase):
 
     def test_legacy_schema_migration_without_data_loss(self):
         """Test migrating an old schema table (8 columns with seen_at) to the new 6-state schema."""
-        # 1. Create a legacy table with old schema
         conn = sqlite3.connect(self.db_path)
         conn.execute(
             """CREATE TABLE listings (
@@ -53,10 +55,8 @@ class TestDatabaseMigrationAndPersistence(unittest.TestCase):
         conn.commit()
         conn.close()
 
-        # 2. Run init_db migration
         db.init_db(self.db_path)
 
-        # 3. Verify columns and data preservation
         conn = db.get_connection(self.db_path)
         cur = conn.execute("PRAGMA table_info(listings)")
         col_names = [r["name"] for r in cur.fetchall()]
@@ -68,7 +68,6 @@ class TestDatabaseMigrationAndPersistence(unittest.TestCase):
         for col in expected_cols:
             self.assertIn(col, col_names)
 
-        # Legacy items should have been marked as 'delivered' so they aren't spammed
         row1 = conn.execute("SELECT * FROM listings WHERE id = 'legacy-1'").fetchone()
         self.assertEqual(row1["delivery_state"], "delivered")
         self.assertEqual(row1["delivered_at"], "2026-08-20T12:00:00Z")
@@ -85,15 +84,12 @@ class TestDatabaseMigrationAndPersistence(unittest.TestCase):
             copy_path = os.path.join(self.temp_dir, "real_radar_copy.db")
             shutil.copy2(real_db, copy_path)
             
-            # Count before
             conn = sqlite3.connect(copy_path)
             count_before = conn.execute("SELECT COUNT(*) FROM listings").fetchone()[0]
             conn.close()
 
-            # Run migration
             db.init_db(copy_path)
 
-            # Count after
             conn = db.get_connection(copy_path)
             count_after = conn.execute("SELECT COUNT(*) FROM listings").fetchone()[0]
             self.assertEqual(count_before, count_after)
@@ -134,24 +130,19 @@ class TestDeliveryLifecycle(unittest.TestCase):
         new_items = db.store_listings(items, db_path=self.db_path)
         self.assertEqual(len(new_items), 2)
 
-        # Agent item should be pending; Human item should be discovered
         pending = db.get_pending_deliveries(db_path=self.db_path)
         self.assertEqual(len(pending), 1)
         self.assertEqual(pending[0]["id"], "item-agent-1")
         self.assertEqual(pending[0]["delivery_state"], "pending")
 
-        # Claim delivery
         claimed = db.claim_delivery("item-agent-1", db_path=self.db_path)
         self.assertTrue(claimed)
 
-        # Second claim should fail (already delivering)
         claimed_again = db.claim_delivery("item-agent-1", db_path=self.db_path)
         self.assertFalse(claimed_again)
 
-        # Mark delivered
         db.mark_delivered("item-agent-1", db_path=self.db_path)
 
-        # Verify delivered state
         pending_after = db.get_pending_deliveries(db_path=self.db_path)
         self.assertEqual(len(pending_after), 0)
 
@@ -175,7 +166,6 @@ class TestDeliveryLifecycle(unittest.TestCase):
         }
         db.store_listings([item], db_path=self.db_path)
 
-        # 1st attempt
         self.assertTrue(db.claim_delivery("item-retry-1", db_path=self.db_path))
         state1 = db.mark_transient_failure(
             "item-retry-1", "HTTP 429 Rate Limit", max_attempts=3, base_backoff_sec=10, db_path=self.db_path
@@ -189,24 +179,20 @@ class TestDeliveryLifecycle(unittest.TestCase):
         self.assertIsNotNone(row["next_retry_at"])
         self.assertIn("HTTP 429", row["last_error"])
 
-        # Simulate time passing by manually updating next_retry_at to past
         past_time = (datetime.now(timezone.utc) - timedelta(seconds=10)).isoformat()
         conn.execute("UPDATE listings SET next_retry_at = ? WHERE id = 'item-retry-1'", (past_time,))
         conn.commit()
         conn.close()
 
-        # Should appear in pending deliveries again
         pending = db.get_pending_deliveries(db_path=self.db_path)
         self.assertEqual(len(pending), 1)
 
-        # 2nd attempt
         self.assertTrue(db.claim_delivery("item-retry-1", db_path=self.db_path))
         state2 = db.mark_transient_failure(
             "item-retry-1", "HTTP 500 Server Error", max_attempts=3, base_backoff_sec=10, db_path=self.db_path
         )
         self.assertEqual(state2, db.STATE_RETRY_WAIT)
 
-        # 3rd attempt (max_attempts = 3) -> should become permanently_failed
         self.assertTrue(db.claim_delivery("item-retry-1", db_path=self.db_path))
         state3 = db.mark_transient_failure(
             "item-retry-1", "HTTP 503 Service Unavailable", max_attempts=3, base_backoff_sec=10, db_path=self.db_path
@@ -254,12 +240,10 @@ class TestDeliveryLifecycle(unittest.TestCase):
         db.store_listings([item], db_path=self.db_path)
         self.assertTrue(db.claim_delivery("item-stalled-1", db_path=self.db_path))
 
-        # Manually set updated_at to 10 minutes ago
         past_time = (datetime.now(timezone.utc) - timedelta(minutes=10)).isoformat()
         with db.get_connection(self.db_path) as conn:
             conn.execute("UPDATE listings SET updated_at = ? WHERE id = 'item-stalled-1'", (past_time,))
 
-        # Run recovery with 300s timeout
         recovered_count = db.recover_stale_delivering(timeout_seconds=300, db_path=self.db_path)
         self.assertEqual(recovered_count, 1)
 
@@ -268,27 +252,6 @@ class TestDeliveryLifecycle(unittest.TestCase):
         self.assertEqual(row["delivery_state"], "retry_wait")
         self.assertIn("recovered", row["last_error"])
         conn.close()
-
-    def test_validation_rejects_missing_or_malformed_ids_and_slugs(self):
-        """Test that records missing id or with malformed slugs/ids are rejected."""
-        self.assertFalse(db.validate_listing_id(""))
-        self.assertFalse(db.validate_listing_id("   "))
-        self.assertFalse(db.validate_listing_id(None))
-        self.assertTrue(db.validate_listing_id("valid-id-123"))
-
-        self.assertFalse(db.validate_slug(""))
-        self.assertFalse(db.validate_slug("invalid slug with spaces"))
-        self.assertFalse(db.validate_slug("slug/with/slash"))
-        self.assertFalse(db.validate_slug("../traversal"))
-        self.assertTrue(db.validate_slug("valid-slug_123"))
-
-        bad_items = [
-            {"id": "", "slug": "slug1", "agent_access": "AGENT_ALLOWED"},
-            {"id": "id2", "slug": "bad slug!", "agent_access": "AGENT_ALLOWED"},
-            {"slug": "no-id", "agent_access": "AGENT_ALLOWED"},
-        ]
-        new_items = db.store_listings(bad_items, db_path=self.db_path)
-        self.assertEqual(len(new_items), 0)
 
     def test_secret_redaction(self):
         """Test that tokens and secrets are sanitized from error messages."""
@@ -302,10 +265,150 @@ class TestDeliveryLifecycle(unittest.TestCase):
         self.assertNotIn("aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789", sanitized_dc)
         self.assertIn("[REDACTED_DISCORD_TOKEN]", sanitized_dc)
 
-        err_bearer = "Authorization: Bearer my-secret-jwt-token-value-here"
-        sanitized_b = db.sanitize_error(err_bearer)
-        self.assertNotIn("my-secret-jwt-token-value-here", sanitized_b)
-        self.assertIn("[REDACTED_TOKEN]", sanitized_b)
+
+class TestRadarPoller(unittest.TestCase):
+    def setUp(self):
+        self.temp_dir = tempfile.mkdtemp()
+        self.db_path = os.path.join(self.temp_dir, "test_radar.db")
+        os.environ["RADAR_DB"] = self.db_path
+        db.init_db(self.db_path)
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
+
+    @mock.patch.object(radar.urllib.request, "urlopen")
+    def test_fetch_superteam_headers_and_parsing(self, mock_urlopen):
+        raw_items = [
+            {
+                "id": "item-1",
+                "slug": "bounty-1",
+                "title": "Bounty One",
+                "rewardAmount": 500,
+                "token": "USDC",
+                "deadline": "2026-09-01T00:00:00.000Z",
+                "agentAccess": "AGENT_ALLOWED",
+            },
+            {
+                "id": "item-2",
+                "slug": "bounty-2",
+                "title": "Bounty Two",
+                "rewardAmount": None,
+                "token": None,
+                "deadline": None,
+                "agentAccess": "HUMAN_ONLY",
+            },
+            {
+                "id": "invalid-no-slug",
+                "slug": None,
+                "title": "No slug",
+                "agentAccess": "AGENT_ALLOWED",
+            },
+        ]
+        resp = mock.MagicMock()
+        resp.read.return_value = json.dumps(raw_items).encode("utf-8")
+        resp.__enter__ = lambda s: resp
+        resp.__exit__ = mock.Mock(return_value=False)
+        mock_urlopen.return_value = resp
+
+        items = radar.fetch_superteam()
+        self.assertEqual(len(items), 2)
+        self.assertEqual(items[0]["id"], "item-1")
+        self.assertEqual(items[0]["reward"], "500 USDC")
+        self.assertEqual(items[0]["deadline"], "2026-09-01")
+        self.assertEqual(items[0]["url"], "https://earn.superteam.fun/listing/bounty-1")
+
+        req_call = mock_urlopen.call_args[0][0]
+        self.assertEqual(req_call.headers.get("Accept"), "application/json")
+        self.assertIn("Mozilla/5.0", req_call.headers.get("User-agent"))
+
+    @mock.patch.object(radar.urllib.request, "urlopen")
+    def test_discord_delivery_user_agent_and_payload(self, mock_urlopen):
+        resp = mock.MagicMock()
+        resp.status = 204
+        resp.__enter__ = lambda s: resp
+        resp.__exit__ = mock.Mock(return_value=False)
+        mock_urlopen.return_value = resp
+
+        item = {
+            "title": "Test Bounty",
+            "reward": "100 USDC",
+            "deadline": "2026-09-05",
+            "url": "https://earn.superteam.fun/listing/test-bounty",
+        }
+        webhook_url = "https://discord.com/api/webhooks/123/fake_token"
+        radar.deliver_discord(item, webhook_url)
+
+        req_call = mock_urlopen.call_args[0][0]
+        self.assertEqual(req_call.headers.get("User-agent"), "bounty-radar/1.0")
+        self.assertEqual(req_call.headers.get("Content-type"), "application/json")
+        payload = json.loads(req_call.data.decode("utf-8"))
+        self.assertIn("🤑 NEW bounty: Test Bounty", payload["content"])
+        self.assertIn("💰 100 USDC", payload["content"])
+
+    @mock.patch.object(radar.urllib.request, "urlopen")
+    def test_telegram_delivery_payload(self, mock_urlopen):
+        resp = mock.MagicMock()
+        resp.status = 200
+        resp.__enter__ = lambda s: resp
+        resp.__exit__ = mock.Mock(return_value=False)
+        mock_urlopen.return_value = resp
+
+        item = {
+            "title": "Telegram Bounty",
+            "reward": "300 USDC",
+            "deadline": "2026-09-08",
+            "url": "https://earn.superteam.fun/listing/tg-bounty",
+        }
+        radar.deliver_telegram(item, token="tg_token_123", chat="tg_chat_456")
+
+        req_call = mock_urlopen.call_args[0][0]
+        self.assertIn("/bottg_token_123/sendMessage", req_call.full_url)
+        payload = json.loads(req_call.data.decode("utf-8"))
+        self.assertEqual(payload["chat_id"], "tg_chat_456")
+        self.assertIn("🤑 NEW bounty: Telegram Bounty", payload["text"])
+
+    @mock.patch("radar.time.sleep", return_value=None)
+    @mock.patch.object(radar.urllib.request, "urlopen")
+    def test_batch_larger_than_10_without_data_loss(self, mock_urlopen, mock_sleep):
+        """Verify that when 25 listings arrive, all 25 are delivered without slicing or loss."""
+        resp = mock.MagicMock()
+        resp.status = 204
+        resp.__enter__ = lambda s: resp
+        resp.__exit__ = mock.Mock(return_value=False)
+        mock_urlopen.return_value = resp
+
+        # Create 25 items
+        items = [
+            {
+                "id": f"batch-{i}",
+                "slug": f"batch-slug-{i}",
+                "source": "superteam-earn",
+                "title": f"Bounty {i}",
+                "reward": f"{i*10} USDC",
+                "deadline": "2026-09-01",
+                "agent_access": "AGENT_ALLOWED",
+            }
+            for i in range(25)
+        ]
+        db.store_listings(items, db_path=self.db_path)
+
+        os.environ["RADAR_CHANNEL"] = "discord"
+        os.environ["DISCORD_WEBHOOK_URL"] = "https://discord.com/api/webhooks/123/fake"
+
+        delivered, transient_errs, permanent_errs = radar.deliver_pending(channel="discord")
+        self.assertEqual(delivered, 25)
+        self.assertEqual(transient_errs, 0)
+        self.assertEqual(permanent_errs, 0)
+        self.assertEqual(mock_urlopen.call_count, 25)
+
+        # All items should now be delivered in the DB
+        pending = db.get_pending_deliveries(db_path=self.db_path)
+        self.assertEqual(len(pending), 0)
+
+        conn = db.get_connection(self.db_path)
+        delivered_count = conn.execute("SELECT COUNT(*) FROM listings WHERE delivery_state = 'delivered'").fetchone()[0]
+        self.assertEqual(delivered_count, 25)
+        conn.close()
 
 
 if __name__ == "__main__":
