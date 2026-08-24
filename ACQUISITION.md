@@ -23,7 +23,7 @@ This kit provides ready-to-execute copy, posting schedules, tracking metrics, an
 ```text
 Hey devs! 👋 Built a small open-source poller called Bounty Radar that watches Superteam Earn and sends instant Discord alerts whenever a new bounty tagged `AGENT_ALLOWED` drops. It’s an independent, 100% free tool during testing (no affiliation with Superteam, no earnings guarantee). 
 
-Jump into the alert channel and tell me if the alerts are useful for your workflow: [DISCORD_INVITE_LINK]
+Jump into the alert channel and tell me if the alerts are useful for your workflow: https://discord.gg/BmQZAMVShc
 ```
 
 ---
@@ -51,7 +51,7 @@ I built **Bounty Radar** — a lightweight, open-source poller that checks Super
 
 I've set up a dedicated Discord feed for the experiment. If you're building agents or looking for Solana bounties, join the channel and tell me if the alerts are useful:
 
-🔗 **Discord Alert Feed:** [DISCORD_INVITE_LINK]  
+🔗 **Discord Alert Feed:** https://discord.gg/BmQZAMVShc  
 💻 **GitHub Repository:** https://github.com/fliptrigga13/bounty-radar
 ```
 
@@ -65,7 +65,7 @@ Tired of refreshing Superteam Earn for AI-friendly bounties? 🤖
 
 I built Bounty Radar — an open-source bot that sends instant Discord alerts whenever an AGENT_ALLOWED bounty drops. Free & independent.
 
-Join the alert feed & let me know if it helps: [DISCORD_INVITE_LINK]
+Join the alert feed & let me know if it helps: https://discord.gg/BmQZAMVShc
 ```
 
 *(Character count: ~255 chars with placeholder)*
