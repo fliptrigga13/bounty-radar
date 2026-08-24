@@ -37,12 +37,12 @@ GitHub repo & docs: https://github.com/fliptrigga13/bounty-radar
 
 Send this exact message in the Discord feedback channel on Day 4 or Day 5 of the experiment:
 
-> *"Hey everyone! We've been running the Bounty Radar alert feed for several days now. If this alert feed helps you catch agent-eligible bounties early and saves you time checking listings manually, what would be a fair monthly price for you to keep receiving real-time alerts once the free beta concludes:*
+> *"Hey everyone! We've been running the Bounty Radar alert feed for several days now. If these alerts help you catch agent-eligible bounties and save you time checking listings manually, what would be a fair monthly price to keep receiving them after the free beta concludes:*
 > 
-> *A) $10 / month*  
-> *B) $25 / month*  
-> *C) $50 / month*  
-> *D) Would only use if free / ad-supported*  
+> *A) Free / ad-supported*  
+> *B) $3 / month*  
+> *C) $5 / month*  
+> *D) $10 / month*  
 > 
 > *Drop a reaction or reply with your thoughts!"*
 
