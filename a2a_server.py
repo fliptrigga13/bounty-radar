@@ -23,6 +23,28 @@ from typing import Any, Dict, Optional, Tuple
 import db
 import enrich
 
+
+def _load_env() -> None:
+    """Load key-value pairs from .env.local or .env if present in current directory."""
+    for filename in (".env.local", ".env"):
+        if os.path.exists(filename):
+            try:
+                with open(filename, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if not line or line.startswith("#") or "=" not in line:
+                            continue
+                        k, v = line.split("=", 1)
+                        k = k.strip()
+                        v = v.strip().strip("\"'")
+                        if k not in os.environ:
+                            os.environ[k] = v
+            except Exception:
+                pass
+
+
+_load_env()
+
 MAX_REQUEST_SIZE = 1024 * 1024  # 1 MB
 
 EVAL_REQUIRED = {
