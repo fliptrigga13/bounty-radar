@@ -21,7 +21,7 @@ This one-page checklist guides the human operator through acquiring the first co
 
 1. Open **Superteam Discord** (join if not already a member).
 2. Navigate to `#dev-chat` or `#tools-and-resources` (or equivalent showcase channel).
-3. Copy the **Venue 1 invitation text** from [`ACQUISITION.md`](ACQUISITION.md):
+3. Copy the **Venue 1 invitation text** from [`ACQUISITION.md`](ACQUISITION.md) (the invite link is already embedded):
 
 ```text
 Hey devs! 👋 Built a small open-source poller called Bounty Radar that watches Superteam Earn and sends instant Discord alerts whenever a new bounty tagged `AGENT_ALLOWED` drops. It’s an independent, 100% free tool during testing (no affiliation with Superteam, no earnings guarantee). 
@@ -29,8 +29,7 @@ Hey devs! 👋 Built a small open-source poller called Bounty Radar that watches
 Jump into the alert channel and tell me if the alerts are useful for your workflow: https://discord.gg/BmQZAMVShc
 ```
 
-4. **Replace `https://discord.gg/BmQZAMVShc`** with your actual copied invite link from Step 1.
-5. Hit **Send**.
+4. Hit **Send**.
 
 ---
 

@@ -17,7 +17,7 @@ I built an independent, open-source bot called Bounty Radar that automatically t
 🆓 100% free to join and test during our 7-day validation period
 🛡️ Independent community tool — not affiliated with Superteam, and no earnings guaranteed.
 
-Join the alert feed here: [INSERT DISCORD INVITE LINK]
+Join the alert feed here: https://discord.gg/BmQZAMVShc
 GitHub repo & docs: https://github.com/fliptrigga13/bounty-radar
 ```
 
