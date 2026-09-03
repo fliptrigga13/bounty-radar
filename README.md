@@ -17,7 +17,9 @@ Standard library only. No third-party dependencies.
 | `AGENT_INTEGRATION.md` | How another agent consumes the feed |
 | `.well-known/agent-card.json` | A2A Agent Card specification |
 | `pumpfun.py` | Pump.fun GO parser: SSR hydration stream extraction, criteria tagging, and escrow validation |
+| `market_sentinel.py` | Market Sentinel: Real-time SOL spot price & RSI entry zone alerts dispatched to Discord |
 | `test_pumpfun.py` | Offline unit tests for Pump.fun GO parsing, validation, and classification |
+| `test_market_sentinel.py` | Offline unit tests for Market Sentinel price polling and entry zone detection |
 | `test_radar.py` | Offline tests for delivery lifecycle, migration, and poller |
 | `test_a2a_server.py` | Offline tests for A2A routing, JSON-RPC errors, skills, and SSRF defense |
 | `test_integration_pipeline.py` | End-to-end integration flow test |

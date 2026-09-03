@@ -35,6 +35,7 @@ def _load_env() -> None:
 _load_env()
 
 import pumpfun
+import market_sentinel
 
 SOURCES = {
     "superteam-earn": "https://superteam.fun/api/listings?type=bounty&filter=agents",
@@ -251,6 +252,14 @@ def main() -> None:
         print(
             f"{datetime.now(timezone.utc).isoformat()} | delivery batch completed: delivered={delivered} transient_retries={transient_errs} permanent_failed={permanent_errs}"
         )
+
+    # Check live Solana market conditions & dispatch entry zone alerts
+    try:
+        sentinel_msg = market_sentinel.check_market_triggers()
+        if sentinel_msg:
+            print(f"{datetime.now(timezone.utc).isoformat()} | market_sentinel: {sentinel_msg}")
+    except Exception as e:
+        print(f"{datetime.now(timezone.utc).isoformat()} | market_sentinel warning: {db.sanitize_error(e)}")
 
 
 def run_cycle() -> None:
