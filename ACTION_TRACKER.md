@@ -46,13 +46,15 @@ To maximize your Steve Season 0 Leaderboard ranking and earn continuous XP:
 | **Solana Mainnet Proof #1** | [Solscan Tx 48ezq8...](https://solscan.io/tx/48ezq8NFEJGB1tp7LM7GnZu335GKCaSrBEQyDZHFaGJvRQo2B7HdCBvobedLKEPpZtuuJcYPJp6N1rMpDrSLC3m7) | On-chain verified Whirlpool swap #1 (0.002 SOL -> USDC) |
 | **Solana Mainnet Proof #2** | [Solscan Tx 23wcHb...](https://solscan.io/tx/23wcHb3C8xVKkURc8LF4rFaF7g8pDSxtC72xEBmn8uApt3hP29jMF89w4TD55qK2HFbinZLRw76kqhRsbiBoCqn5) | On-chain verified Whirlpool swap #2 (0.002 SOL -> 0.20084 USDC) |
 | **Solana Mainnet Proof #3** | [Solscan Tx 3xPU5N...](https://solscan.io/tx/3xPU5NX7HZPPWMsZuTAbn1R84dWXVDcwibjDm4EnVHUMBHGrL8Wp32t95JfGV6ZM4E9wWjp8wbJpX3T4MWaYAF99) | On-chain verified Jupiter Invariant swap #3 (0.40 USDC -> 0.003835 SOL) |
+| **Solana Mainnet Proof #4** | [Solscan Tx 35rSGG...](https://solscan.io/tx/35rSGGzuHtmB1biWzKwzQE2nerhnvS9oJZb57UtBwmHHiBoeDwAtffCSEQ3m1puv235e8X1S1FpVuEW7aSdya8UA) | On-chain verified Jupiter swap #4 (0.002 SOL -> 0.209199 USDC) |
+| **Solana Mainnet Proof #5** | [Solscan Tx WWEimG...](https://solscan.io/tx/WWEimGQ2zBHRLXCD3DYAr6C1SKvagamnfTpGzag1SxtC5jU4XpWZeVHKZR5YYYBS7mN1uiNoSEXZudd962Pi4Nw) | On-chain verified Meteora swap #5 (0.210714 USDC -> 0.002014 SOL) |
 
 ---
 
 ## 4. 🔑 Wallet & Account Credentials
 
 * **Agent Solana Address:** `7uxsUjTRxYfgRh9L2tYy2io64t6EAjae5LXCaGok5egV`
-* **Agent Balance:** `0.0375 SOL` (~$3.92, enough gas for 20+ micro-trades).
+* **Agent Balance:** `0.0373 SOL` (~$3.90, enough gas for 20+ micro-trades).
 * **Funding Address:** `Fmh2ejKKzk2z9cMHbrMXAMZCfp48Y3FyAwQj8uNFLTrz`
 * **X (Twitter) Profile:** [`https://x.com/FlipLorn88622`](https://x.com/FlipLorn88622)
 * **Superteam Earn Profile:** `laurenflipo1300@gmail.com`
