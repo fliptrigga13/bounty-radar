@@ -16,7 +16,7 @@
   * **Steve Runtime Handle:** `@martian`
   * **Steve Runtime URL:** `https://steve.oobeprotocol.ai/#agent`
   * **Agent Solana Address:** `7uxsUjTRxYfgRh9L2tYy2io64t6EAjae5LXCaGok5egV`
-  * **Current Wallet Balances:** `0.0337 SOL` (~$3.36) + `0.4016 USDC` (~$0.40)
+  * **Current Wallet Balances:** `0.0375 SOL` (~$3.92) + `0.00 USDC`
   * **Funding Wallet:** `Fmh2ejKKzk2z9cMHbrMXAMZCfp48Y3FyAwQj8uNFLTrz`
 
 ---
@@ -28,6 +28,7 @@
 * **Status:** **SUBMITTED (#1 Pioneer Submission in the Competition)**
 * **On-Chain Trade #1 Proof:** [Solscan 48ezq8...SLC3m7](https://solscan.io/tx/48ezq8NFEJGB1tp7LM7GnZu335GKCaSrBEQyDZHFaGJvRQo2B7HdCBvobedLKEPpZtuuJcYPJp6N1rMpDrSLC3m7) (Whirlpool SOL → USDC)
 * **On-Chain Trade #2 Proof:** [Solscan 23wcHb...BoCqn5](https://solscan.io/tx/23wcHb3C8xVKkURc8LF4rFaF7g8pDSxtC72xEBmn8uApt3hP29jMF89w4TD55qK2HFbinZLRw76kqhRsbiBoCqn5) (Whirlpool SOL → USDC)
+* **On-Chain Trade #3 Proof:** [Solscan 3xPU5N...AF99](https://solscan.io/tx/3xPU5NX7HZPPWMsZuTAbn1R84dWXVDcwibjDm4EnVHUMBHGrL8Wp32t95JfGV6ZM4E9wWjp8wbJpX3T4MWaYAF99) (Jupiter Invariant 0.40 USDC → 0.003835 SOL)
 * **Social Proof:** Published 4-part Technical Thread on X with 2.0x Tech Day boost (+1,000 XP).
 
 ### Submission #2: Build and Demo a Mermail Agent Skill (500 USDC)
