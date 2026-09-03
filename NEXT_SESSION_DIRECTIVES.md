@@ -16,7 +16,7 @@
   * **Steve Runtime Handle:** `@martian`
   * **Steve Runtime URL:** `https://steve.oobeprotocol.ai/#agent`
   * **Agent Solana Address:** `7uxsUjTRxYfgRh9L2tYy2io64t6EAjae5LXCaGok5egV`
-  * **Current Wallet Balances:** `0.0375 SOL` (~$3.92) + `0.00 USDC`
+  * **Current Wallet Balances:** `0.0373 SOL` (~$3.90) + `0.00 USDC`
   * **Funding Wallet:** `Fmh2ejKKzk2z9cMHbrMXAMZCfp48Y3FyAwQj8uNFLTrz`
 
 ---
@@ -26,9 +26,12 @@
 ### Submission #1: Steve Agent Arena (500 USDC)
 * **Superteam Earn Listing:** [https://earn.superteam.fun/listing/steve-agent-arena-launch-your-agent-and-win-500-usdc/](https://earn.superteam.fun/listing/steve-agent-arena-launch-your-agent-and-win-500-usdc/)
 * **Status:** **SUBMITTED (#1 Pioneer Submission in the Competition)**
-* **On-Chain Trade #1 Proof:** [Solscan 48ezq8...SLC3m7](https://solscan.io/tx/48ezq8NFEJGB1tp7LM7GnZu335GKCaSrBEQyDZHFaGJvRQo2B7HdCBvobedLKEPpZtuuJcYPJp6N1rMpDrSLC3m7) (Whirlpool SOL → USDC)
-* **On-Chain Trade #2 Proof:** [Solscan 23wcHb...BoCqn5](https://solscan.io/tx/23wcHb3C8xVKkURc8LF4rFaF7g8pDSxtC72xEBmn8uApt3hP29jMF89w4TD55qK2HFbinZLRw76kqhRsbiBoCqn5) (Whirlpool SOL → USDC)
-* **On-Chain Trade #3 Proof:** [Solscan 3xPU5N...AF99](https://solscan.io/tx/3xPU5NX7HZPPWMsZuTAbn1R84dWXVDcwibjDm4EnVHUMBHGrL8Wp32t95JfGV6ZM4E9wWjp8wbJpX3T4MWaYAF99) (Jupiter Invariant 0.40 USDC → 0.003835 SOL)
+* **On-Chain Trades (5 / 5 Complete!):**
+  1. [Solscan 48ezq8...SLC3m7](https://solscan.io/tx/48ezq8NFEJGB1tp7LM7GnZu335GKCaSrBEQyDZHFaGJvRQo2B7HdCBvobedLKEPpZtuuJcYPJp6N1rMpDrSLC3m7) (Whirlpool SOL → USDC)
+  2. [Solscan 23wcHb...BoCqn5](https://solscan.io/tx/23wcHb3C8xVKkURc8LF4rFaF7g8pDSxtC72xEBmn8uApt3hP29jMF89w4TD55qK2HFbinZLRw76kqhRsbiBoCqn5) (Whirlpool SOL → USDC)
+  3. [Solscan 3xPU5N...AF99](https://solscan.io/tx/3xPU5NX7HZPPWMsZuTAbn1R84dWXVDcwibjDm4EnVHUMBHGrL8Wp32t95JfGV6ZM4E9wWjp8wbJpX3T4MWaYAF99) (Jupiter Invariant 0.40 USDC → 0.003835 SOL)
+  4. [Solscan 35rSGG...a8UA](https://solscan.io/tx/35rSGGzuHtmB1biWzKwzQE2nerhnvS9oJZb57UtBwmHHiBoeDwAtffCSEQ3m1puv235e8X1S1FpVuEW7aSdya8UA) (Jupiter 0.002 SOL → 0.209199 USDC)
+  5. [Solscan WWEimG...i4Nw](https://solscan.io/tx/WWEimGQ2zBHRLXCD3DYAr6C1SKvagamnfTpGzag1SxtC5jU4XpWZeVHKZR5YYYBS7mN1uiNoSEXZudd962Pi4Nw) (Meteora 0.210714 USDC → 0.002014 SOL)
 * **Social Proof:** Published 4-part Technical Thread on X with 2.0x Tech Day boost (+1,000 XP).
 
 ### Submission #2: Build and Demo a Mermail Agent Skill (500 USDC)
