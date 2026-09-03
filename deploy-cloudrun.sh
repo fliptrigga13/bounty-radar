@@ -59,7 +59,7 @@ echo "4. Submitting build to Google Cloud Build..."
 gcloud builds submit \
   --project="$PROJECT_ID" \
   --config=cloudbuild.yaml \
-  --substitutions="_REGION=${REGION},_REPO_NAME=${REPO_NAME},_SERVICE_NAME=${SERVICE_NAME},_GCS_DATA_BUCKET=${GCS_DATA_BUCKET}"
+  --substitutions="_REGION=${REGION},_REPO_NAME=${REPO_NAME},_SERVICE_NAME=${SERVICE_NAME},_GCS_DATA_BUCKET=${GCS_DATA_BUCKET},_IMAGE_TAG=${IMAGE_TAG}"
 
 # 5. Retrieve public HTTPS URL
 echo "5. Deployment completed. Fetching service URL..."
