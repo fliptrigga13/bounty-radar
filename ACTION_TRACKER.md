@@ -43,7 +43,8 @@ To maximize your Steve Season 0 Leaderboard ranking and earn continuous XP:
 | **GitHub Repository** | [`https://github.com/fliptrigga13/bounty-radar`](https://github.com/fliptrigga13/bounty-radar) | Full source code, test suite, and docs |
 | **Video Demonstration** | [`bounty_radar_demo.mp4`](https://github.com/fliptrigga13/bounty-radar/blob/master/bounty_radar_demo.mp4) | 1080p full narrated walkthrough video |
 | **Skill Specification** | [`skills/bounty-radar/SKILL.md`](https://github.com/fliptrigga13/bounty-radar/blob/master/skills/bounty-radar/SKILL.md) | Official Mermail skill definition |
-| **Solana Mainnet Proof** | [Solscan Transaction Receipt](https://solscan.io/tx/48ezq8NFEJGB1tp7LM7GnZu335GKCaSrBEQyDZHFaGJvRQo2B7HdCBvobedLKEPpZtuuJcYPJp6N1rMpDrSLC3m7) | On-chain verified Whirlpool swap |
+| **Solana Mainnet Proof #1** | [Solscan Tx 48ezq8...](https://solscan.io/tx/48ezq8NFEJGB1tp7LM7GnZu335GKCaSrBEQyDZHFaGJvRQo2B7HdCBvobedLKEPpZtuuJcYPJp6N1rMpDrSLC3m7) | On-chain verified Whirlpool swap #1 |
+| **Solana Mainnet Proof #2** | [Solscan Tx 23wcHb...](https://solscan.io/tx/23wcHb3C8xVKkURc8LF4rFaF7g8pDSxtC72xEBmn8uApt3hP29jMF89w4TD55qK2HFbinZLRw76kqhRsbiBoCqn5) | On-chain verified Whirlpool swap #2 (0.002 SOL -> 0.20084 USDC) |
 
 ---
 
