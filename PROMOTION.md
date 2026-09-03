@@ -78,14 +78,15 @@ Log metrics daily during the 7-day experiment:
 
 | Metric | Target | Actual | Notes |
 |---|---|---|---|
-| New Superteam Listings Detected | — | 4 | Total 40 listings stored in SQLite WAL database |
-| AGENT_ALLOWED Bounties Alerted | > 0 | 1 | "Steve Agent Arena: Launch Your Agent & Win 500 USDC" |
-| Discord Alert Channel Delivery | 100% | 100% | Successfully pushed to webhook with zero retries |
-| Active Services | Both | Online | A2A JSON-RPC (port 8080) + Background Discovery Poller |
-| Operational Issues / Errors | 0 | 0 | Zero 429s, zero transient failures, clean recovery |
+| Total Multi-Source Listings Ingested | — | 65 | 40 Superteam Earn + 25 Pump.fun GO listings in SQLite WAL |
+| AGENT_ALLOWED Bounties Alerted | > 0 | 10 | 1 Superteam (500 USDC) + 9 Pump.fun (up to $10,112 USD) |
+| Discord Alert Channel Delivery | 100% | 100% | 10 alerts delivered to webhook with zero retries |
+| Active Services | Both | Online | A2A JSON-RPC (port 8080) + Background Dual Poller |
+| Operational Issues / Errors | 0 | 0 | Zero 429s, zero transient failures, 42/42 unit tests passing |
 
 **Key Learnings & Feedback:**
-- Real-time detection verified against Superteam Earn API.
-- New high-value bounty detected: 500 USDC agent competition ending 2026-09-16.
-- A2A v0.3 Protocol endpoint (`/a2a`) successfully returned listing payload to agent queries.
+- Dual-Engine Discovery verified live across Superteam Earn and Pump.fun GO (`goGzNYTYkSEe4hUqz6dPmY5uf3CTt36AQAoujXDrKiV`).
+- High-value viral bounties identified: including $10,112.05 USD onboarding bounty and 500 USDC Steve Agent Arena competition.
+- Intelligent Triage Classifier automatically separated agent-friendly coding/content bounties from physical stunt noise.
+- A2A v0.3 Protocol endpoint (`/a2a`) successfully routing cross-platform opportunities to AI agents.
 

@@ -34,8 +34,11 @@ def _load_env() -> None:
 
 _load_env()
 
+import pumpfun
+
 SOURCES = {
     "superteam-earn": "https://superteam.fun/api/listings?type=bounty&filter=agents",
+    "pumpfun-go": "https://go.pump.fun",
 }
 
 SHUTDOWN = False
@@ -194,15 +197,32 @@ def main() -> None:
     if recovered > 0:
         print(f"{datetime.now(timezone.utc).isoformat()} | recovered {recovered} stale delivering records")
 
-    all_items = fetch_superteam()
+    all_items: List[Dict[str, Any]] = []
+
+    # 1. Fetch Superteam Earn
+    try:
+        superteam_items = fetch_superteam()
+        all_items.extend(superteam_items)
+    except Exception as e:
+        print(f"{datetime.now(timezone.utc).isoformat()} | Superteam fetch warning: {db.sanitize_error(e)}")
+
+    # 2. Fetch Pump.fun GO
+    try:
+        pumpfun_items = pumpfun.fetch_pumpfun_bounties()
+        all_items.extend(pumpfun_items)
+    except Exception as e:
+        print(f"{datetime.now(timezone.utc).isoformat()} | Pump.fun fetch warning: {db.sanitize_error(e)}")
+
     truly_agent = [i for i in all_items if i.get("agent_access") == "AGENT_ALLOWED"]
     new_items = db.store_listings(all_items)
     agent_new = [i for i in new_items if i.get("agent_access") == "AGENT_ALLOWED"]
 
     # Also record opportunity objects for cross-agent discovery
     for item in truly_agent:
+        src = item.get("source", "superteam-earn")
+        provenance = "go.pump.fun" if src == "pumpfun" else "superteam.fun/api/listings?type=bounty&filter=agents"
         opp = {
-            "source": item.get("source", "superteam-earn"),
+            "source": src,
             "id": item["id"],
             "title": item.get("title"),
             "reward": item.get("reward"),
@@ -210,12 +230,12 @@ def main() -> None:
             "url": item.get("url"),
             "agent_access": item.get("agent_access"),
             "observed_at": db.utcnow(),
-            "provenance": "superteam.fun/api/listings?type=bounty&filter=agents",
+            "provenance": provenance,
             "skills": [],
             "eligibility": [],
             "region": None,
             "requirements": None,
-            "description_text": "",
+            "description_text": item.get("description", ""),
         }
         db.record_opportunity(opp, enriched=False)
 
