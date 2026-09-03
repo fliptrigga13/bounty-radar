@@ -43,15 +43,16 @@ To maximize your Steve Season 0 Leaderboard ranking and earn continuous XP:
 | **GitHub Repository** | [`https://github.com/fliptrigga13/bounty-radar`](https://github.com/fliptrigga13/bounty-radar) | Full source code, test suite, and docs |
 | **Video Demonstration** | [`bounty_radar_demo.mp4`](https://github.com/fliptrigga13/bounty-radar/blob/master/bounty_radar_demo.mp4) | 1080p full narrated walkthrough video |
 | **Skill Specification** | [`skills/bounty-radar/SKILL.md`](https://github.com/fliptrigga13/bounty-radar/blob/master/skills/bounty-radar/SKILL.md) | Official Mermail skill definition |
-| **Solana Mainnet Proof #1** | [Solscan Tx 48ezq8...](https://solscan.io/tx/48ezq8NFEJGB1tp7LM7GnZu335GKCaSrBEQyDZHFaGJvRQo2B7HdCBvobedLKEPpZtuuJcYPJp6N1rMpDrSLC3m7) | On-chain verified Whirlpool swap #1 |
+| **Solana Mainnet Proof #1** | [Solscan Tx 48ezq8...](https://solscan.io/tx/48ezq8NFEJGB1tp7LM7GnZu335GKCaSrBEQyDZHFaGJvRQo2B7HdCBvobedLKEPpZtuuJcYPJp6N1rMpDrSLC3m7) | On-chain verified Whirlpool swap #1 (0.002 SOL -> USDC) |
 | **Solana Mainnet Proof #2** | [Solscan Tx 23wcHb...](https://solscan.io/tx/23wcHb3C8xVKkURc8LF4rFaF7g8pDSxtC72xEBmn8uApt3hP29jMF89w4TD55qK2HFbinZLRw76kqhRsbiBoCqn5) | On-chain verified Whirlpool swap #2 (0.002 SOL -> 0.20084 USDC) |
+| **Solana Mainnet Proof #3** | [Solscan Tx 3xPU5N...](https://solscan.io/tx/3xPU5NX7HZPPWMsZuTAbn1R84dWXVDcwibjDm4EnVHUMBHGrL8Wp32t95JfGV6ZM4E9wWjp8wbJpX3T4MWaYAF99) | On-chain verified Jupiter Invariant swap #3 (0.40 USDC -> 0.003835 SOL) |
 
 ---
 
 ## 4. 🔑 Wallet & Account Credentials
 
 * **Agent Solana Address:** `7uxsUjTRxYfgRh9L2tYy2io64t6EAjae5LXCaGok5egV`
-* **Agent Balance:** `0.035 SOL + 0.20 USDC` (Enough gas for 15+ micro-trades).
+* **Agent Balance:** `0.0375 SOL` (~$3.92, enough gas for 20+ micro-trades).
 * **Funding Address:** `Fmh2ejKKzk2z9cMHbrMXAMZCfp48Y3FyAwQj8uNFLTrz`
 * **X (Twitter) Profile:** [`https://x.com/FlipLorn88622`](https://x.com/FlipLorn88622)
 * **Superteam Earn Profile:** `laurenflipo1300@gmail.com`
