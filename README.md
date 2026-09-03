@@ -48,31 +48,26 @@ LINUX
 python3 ./radar.py --once
 ```
 
-## Run the poller (daemon)
+## Run unified server (A2A JSON-RPC + Background Discovery Poller)
 
 WINDOWS POWERSHELL
 ```powershell
-$env:RADAR_CHANNEL="discord"
-$env:DISCORD_WEBHOOK_URL="<your webhook>"
-python .\radar.py
+.\start-radar.ps1
+# or: python .\a2a_server.py
 ```
 
 LINUX
 ```bash
-export RADAR_CHANNEL=discord
-export DISCORD_WEBHOOK_URL="<your webhook>"
-python3 ./radar.py
+python3 ./a2a_server.py
 ```
+*(By default, `a2a_server.py` runs both the A2A HTTP JSON-RPC server on port 8080 and an embedded background poller thread that checks Superteam Earn every hour and delivers notifications to Discord/Telegram. Set `RADAR_AUTO_POLL=0` to disable the embedded poller).*
 
-Stop with `Ctrl+C`. The SQLite database persists across restarts in WAL mode; already-delivered
-listings are never re-sent.
+### Run poller standalone (optional)
 
-## Run the A2A server
-
-WINDOWS POWERSHELL
 ```powershell
-python .\a2a_server.py
+python .\radar.py
 ```
+
 
 Verify:
 ```powershell

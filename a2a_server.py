@@ -533,20 +533,36 @@ def main() -> None:
             log("http", detail=fmt % args)
 
     db.init_db()
+
+    poller_thread = None
+    poller_stop_event = None
+    if os.environ.get("RADAR_AUTO_POLL", "true").lower() in ("1", "true", "yes"):
+        try:
+            import radar
+            log("poller_startup", message="Starting embedded background radar discovery poller")
+            poller_thread, poller_stop_event = radar.start_background_poller()
+        except Exception as exc:
+            log("poller_error", error=f"{type(exc).__name__}: {str(exc)}")
+
     port = int(os.environ.get("A2A_PORT", "8080"))
     SERVER_INSTANCE = make_server("", port, app, handler_class=QuietHandler)
 
     def _sig_handler(signum, frame):
+        if poller_stop_event:
+            poller_stop_event.set()
         threading.Thread(target=shutdown_server).start()
 
     signal.signal(signal.SIGINT, _sig_handler)
     signal.signal(signal.SIGTERM, _sig_handler)
 
-    log("listening", port=port)
+    log("listening", port=port, poller_active=bool(poller_thread and poller_thread.is_alive()))
     try:
         SERVER_INSTANCE.serve_forever()
     except Exception as e:
         log("server_stopped", error=type(e).__name__)
+    finally:
+        if poller_stop_event:
+            poller_stop_event.set()
 
 
 if __name__ == "__main__":

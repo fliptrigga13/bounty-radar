@@ -69,3 +69,23 @@ Log metrics daily during the 7-day experiment:
 - Pricing signals:
 - Action items for tomorrow:
 ```
+
+---
+
+## 5. Live Scorecards Log
+
+### Daily Scorecard - Day 1 (Date: 2026-09-02)
+
+| Metric | Target | Actual | Notes |
+|---|---|---|---|
+| New Superteam Listings Detected | — | 4 | Total 40 listings stored in SQLite WAL database |
+| AGENT_ALLOWED Bounties Alerted | > 0 | 1 | "Steve Agent Arena: Launch Your Agent & Win 500 USDC" |
+| Discord Alert Channel Delivery | 100% | 100% | Successfully pushed to webhook with zero retries |
+| Active Services | Both | Online | A2A JSON-RPC (port 8080) + Background Discovery Poller |
+| Operational Issues / Errors | 0 | 0 | Zero 429s, zero transient failures, clean recovery |
+
+**Key Learnings & Feedback:**
+- Real-time detection verified against Superteam Earn API.
+- New high-value bounty detected: 500 USDC agent competition ending 2026-09-16.
+- A2A v0.3 Protocol endpoint (`/a2a`) successfully returned listing payload to agent queries.
+

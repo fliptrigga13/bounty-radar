@@ -3,6 +3,7 @@ import json
 import os
 import signal
 import sys
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -232,25 +233,46 @@ def main() -> None:
         )
 
 
+def run_cycle() -> None:
+    """Execute a single fetch, store, and deliver cycle safely."""
+    try:
+        main()
+    except Exception as e:
+        err_msg = f"{type(e).__name__}: {str(e)}"
+        print(f"{datetime.now(timezone.utc).isoformat()} | cycle error (continuing): {db.sanitize_error(err_msg)}")
+
+
+def poll_loop(stop_event: Optional[threading.Event] = None, interval: Optional[int] = None) -> None:
+    """Run continuous polling until SHUTDOWN or stop_event is set."""
+    if interval is None:
+        interval = int(os.environ.get("RADAR_INTERVAL_SEC", "3600"))
+    while not SHUTDOWN and (stop_event is None or not stop_event.is_set()):
+        run_cycle()
+        for _ in range(interval):
+            if SHUTDOWN or (stop_event and stop_event.is_set()):
+                break
+            time.sleep(1)
+
+
+def start_background_poller(interval: Optional[int] = None) -> Tuple[threading.Thread, threading.Event]:
+    """Start the poller loop in a background daemon thread."""
+    stop_event = threading.Event()
+    thread = threading.Thread(
+        target=poll_loop,
+        kwargs={"stop_event": stop_event, "interval": interval},
+        daemon=True,
+        name="RadarPollerThread",
+    )
+    thread.start()
+    return thread, stop_event
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bounty Radar discovery and alert poller")
     parser.add_argument("--once", action="store_true", help="Run a single poll cycle and exit")
     args = parser.parse_args()
 
-    def cycle() -> None:
-        try:
-            main()
-        except Exception as e:
-            err_msg = f"{type(e).__name__}: {str(e)}"
-            print(f"{datetime.now(timezone.utc).isoformat()} | cycle error (continuing): {db.sanitize_error(err_msg)}")
-
-    cycle()
-    if not args.once and not SHUTDOWN:
-        interval = int(os.environ.get("RADAR_INTERVAL_SEC", "3600"))
-        while not SHUTDOWN:
-            for _ in range(interval):
-                if SHUTDOWN:
-                    break
-                time.sleep(1)
-            if not SHUTDOWN:
-                cycle()
+    if args.once:
+        run_cycle()
+    else:
+        poll_loop()

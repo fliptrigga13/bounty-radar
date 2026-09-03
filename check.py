@@ -51,8 +51,17 @@ def main() -> None:
     print("=== Bounty Radar Operational Readiness Check ===")
 
     # 1. Daemon process status
-    radar_running = check_process_running("radar.py")
-    print(f"1. Radar Daemon Running:  {'YES' if radar_running else 'NO (stopped/idle)'}")
+    has_radar = check_process_running("radar.py")
+    has_a2a = check_process_running("a2a_server.py")
+    if has_radar and has_a2a:
+        radar_desc = "YES (both radar.py + a2a_server.py running)"
+    elif has_a2a:
+        radar_desc = "YES (unified: a2a_server.py with embedded discovery poller)"
+    elif has_radar:
+        radar_desc = "YES (standalone: radar.py)"
+    else:
+        radar_desc = "NO (stopped/idle)"
+    print(f"1. Discovery Poller:      {radar_desc}")
 
     # 2. A2A Server HTTP health
     a2a_status = check_a2a_health(A2A_PORT)
