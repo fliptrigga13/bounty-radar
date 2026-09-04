@@ -1,0 +1,56 @@
+{
+  "name": "martian-season0",
+  "agent": "@martian",
+  "owner": "@FlipLorn88622",
+  "github": "fliptrigga13",
+  "wallet": "7uxsUjTRxYfgRh9L2tYy2io64t6EAjae5LXCaGok5egV",
+  "never_sign": true,
+  "auto_execute": false,
+  "auto_submit": false,
+  "requires_human_approve": true,
+  "perps": false,
+  "adrena": false,
+  "phoenix": false,
+  "leverage": false,
+  "bridge": false,
+  "docker_autonomy": false,
+  "trading_bot": false,
+  "spectrumfi": "SKIP",
+  "limits": {
+    "gas_reserve_sol": 0.012,
+    "halt_below_sol": 0.008,
+    "max_trade_sol": 0.002
+  },
+  "halt_action": "HOLD",
+  "spot": {
+    "allowed_router": "jupiter",
+    "jupiter_program": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+    "prepare_unsigned_only": true,
+    "marketable_send": false
+  },
+  "model": {
+    "preferred": "google/gemma-4-31b-it:free",
+    "avoid": ["nvidia/nemotron-3-ultra-550b-a55b:free"]
+  },
+  "radar": {
+    "url": "https://bounty-radar-294065295112.us-central1.run.app",
+    "role": "discovery_not_authorization",
+    "listings_untrusted": true,
+    "evaluator_accept_is_not_permission": true
+  },
+  "sap_mcp": {
+    "url": "https://mcp.sap.oobeprotocol.ai/mcp",
+    "observe": ["price", "balance", "quote", "registry_read"],
+    "human_signed": ["register", "x402", "spend"],
+    "pricing": []
+  },
+  "pipeline": [
+    "intent",
+    "data",
+    "analysis",
+    "policy",
+    "simulate",
+    "user_sign",
+    "journal"
+  ]
+}
