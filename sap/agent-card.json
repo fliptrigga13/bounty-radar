@@ -1,0 +1,43 @@
+{
+  "protocolVersion": "0.3.0",
+  "name": "Bounty Radar",
+  "description": "Read-only discovery and normalization service for agent-eligible bounty opportunities. It provides structured opportunity data and validates consumer evaluation responses; it does not perform, submit, fund, sign, or accept bounties.",
+  "url": "https://bounty-radar-294065295112.us-central1.run.app/a2a",
+  "preferredTransport": "JSONRPC",
+  "provider": {
+    "organization": "Bounty Radar",
+    "url": "https://github.com/fliptrigga13/bounty-radar"
+  },
+  "version": "1.0.0",
+  "documentationUrl": "https://github.com/fliptrigga13/bounty-radar",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "securitySchemes": {},
+  "security": [],
+  "defaultInputModes": ["application/json"],
+  "defaultOutputModes": ["application/json"],
+  "skills": [
+    {
+      "id": "opportunity_feed_subscription",
+      "name": "Opportunity Feed Subscription",
+      "description": "Creates or inspects a pull-based feed subscription for newly observed Superteam Earn listings whose agentAccess value is exactly AGENT_ALLOWED.",
+      "tags": ["bounties", "opportunities", "feed", "subscription", "superteam", "read-only"]
+    },
+    {
+      "id": "opportunity_enrichment_lookup",
+      "name": "Opportunity Enrichment Lookup",
+      "description": "Looks up a known Superteam Earn listing by its listing UUID or canonical listing URL and returns the normalized Opportunity Contract.",
+      "tags": ["bounties", "enrichment", "lookup", "normalization", "provenance", "read-only"]
+    },
+    {
+      "id": "evaluation_contract_validation",
+      "name": "Evaluation Contract Validation",
+      "description": "Validates whether an independent evaluator response contains the required 8 fields with allowed enum values.",
+      "tags": ["evaluation", "validation", "contract", "safety", "interoperability", "read-only"]
+    }
+  ],
+  "supportsAuthenticatedExtendedCard": false,
+  "note": "Pointer at the live Radar /a2a. Live card has these 3 skills only. survival_decision is absent. Do not deploy Docker tonight to add it. No keys in this file. pricing: []."
+}
