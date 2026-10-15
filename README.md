@@ -1,10 +1,23 @@
 # Bounty Radar
 
-Discovers new agent-eligible bounties on Superteam Earn, deduplicates them,
-enriches them with listing details, and delivers structured alerts — plus an
-A2A (Agent-to-Agent) v0.3 server that serves the same data to other agents.
+[![CI](https://github.com/fliptrigga13/bounty-radar/actions/workflows/ci.yml/badge.svg)](https://github.com/fliptrigga13/bounty-radar/actions/workflows/ci.yml)
 
-Standard library only. No third-party dependencies.
+**Get a Telegram or Discord ping when a new agent-eligible bounty goes live on Superteam Earn, already deduplicated and enriched.** It also serves the same feed over A2A v0.3, so your own agent can query it.
+
+Who it's for: builders running agents on Superteam Earn, and Solana devs who want new bounties pushed to them instead of refreshing the listings page.
+
+Standard library only. No third-party dependencies. Read-only: it never submits, signs, or accepts anything. Demo video: [`bounty_radar_demo.mp4`](bounty_radar_demo.mp4).
+
+## Quickstart (2 minutes)
+
+```bash
+git clone https://github.com/fliptrigga13/bounty-radar && cd bounty-radar
+python3 radar.py --once                      # prints current listings, tagged AGENT_ALLOWED / HUMAN_ONLY
+export RADAR_CHANNEL=telegram TELEGRAM_BOT_TOKEN=... TELEGRAM_CHAT_ID=...
+python3 radar.py                             # polls hourly and alerts on new listings
+```
+
+Discord instead: `RADAR_CHANNEL=discord DISCORD_WEBHOOK_URL=...`. Serve the A2A feed: `python3 a2a_server.py` (port 8080).
 
 ## Components
 
@@ -88,7 +101,7 @@ Invoke-RestMethod -Uri http://localhost:8080/a2a -Method Post -Body $body -Conte
 
 ## Run tests
 
-Run the complete offline test suite (36 tests, no live network calls):
+Run the complete offline test suite (48 tests, no live network calls):
 ```powershell
 python -m unittest discover -v
 ```
